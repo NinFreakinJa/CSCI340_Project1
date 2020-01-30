@@ -20,7 +20,7 @@ struct process{
 
 int main(int argv,char *argc[]){
     //proc directory
-    DIR *drproc=opendir("./proc");
+    DIR *drproc=opendir("/proc");
     struct dirent *entry;
     int count=0;
     if(drproc==NULL){
@@ -40,9 +40,12 @@ int main(int argv,char *argc[]){
                 pList=realloc(pList,sizeof(struct process)*(size+50));
                 size+=50;
             }
-            printf("%s",directoryName);
+            //just checking if working
+            //REMOVE
+            printf("%s\n",directoryName);
         }
     }
-    
+    //REMOVE
+    printf("%d",count);
     closedir(drproc);
 }
