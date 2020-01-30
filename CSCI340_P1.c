@@ -4,15 +4,25 @@
 
 
 struct process{
+    //field # in relation to stat file
+    // %d field 1
     int pid;
+    // %d field 4
     int ppid;
+    // %lu field 23
     int vsize;
     struct process *parent;
-    char name[];
+    //name
+    // %s field 2
+    char comm[];
 };
 
 int main(int argv,char *argc[]){
-    DIR *directory;
+    //proc directory
+    DIR *drproc=opendir("./proc");
     struct dirent *entry;
     int count;
+    if(drproc==NULL){
+
+    }
 }
