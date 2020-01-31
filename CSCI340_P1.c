@@ -17,6 +17,11 @@ struct process{
     // %s field 2
     char comm[];
 };
+//make tree method
+//recursive function starting at root (systemd pid=1)
+//goes through list PIDs and when PPID is the same it is added and finds its own children until coming back and continuing
+//print tree method
+//print out using preorder traversal making sure to indent maybe put in increasing int by level to multiply tab by
 
 int main(int argv,char *argc[]){
     //proc directory
@@ -30,6 +35,8 @@ int main(int argv,char *argc[]){
     int size=300;
     //linked list of processes
     //probably need a better type of list for later making the tree
+    //replace with make tree
+    //change to make a list of PIDs instead
     struct process *pList=malloc(sizeof(struct process)*300);
     while((entry=readdir(drproc))!=NULL){
         char *directoryName=entry->d_name;
