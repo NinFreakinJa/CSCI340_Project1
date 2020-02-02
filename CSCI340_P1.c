@@ -62,7 +62,7 @@ struct process makeTree(struct process root,int pidList[],int processCount){
         }   
     }
     //will go through and create linked list of child processes
-    root.children=addChildren(root,newpList,processCount-1);
+    root.children=&addChildren(root,newpList,processCount-1);
     //close the file
     fclose(statF);
     return root;
@@ -105,7 +105,7 @@ struct process addChildren(struct process root, int pidList[], int processCount)
                             }   
                         }
                         //creates linked list of siblings
-                        newRoot.siblings=addChildren(root,newpList,processCount-1);
+                        newRoot.siblings=&addChildren(root,newpList,processCount-1);
                         //after linked list created the recursion continues for the tree
                         return makeTree(newRoot,pidList,processCount);
                     }
