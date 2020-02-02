@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 struct process{
     //field # in relation to stat file
     // %d field 1
