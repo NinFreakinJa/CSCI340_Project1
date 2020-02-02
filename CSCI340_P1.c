@@ -6,6 +6,7 @@
 
 struct process{
     //field # in relation to stat file
+    
     // %d field 1
     int pid;
     // %d field 4
