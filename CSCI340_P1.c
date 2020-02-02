@@ -120,6 +120,9 @@ struct process addChildren(struct process root, int pidList[], int processCount)
 
 //print tree method
 //print out using preorder traversal making sure to indent maybe put in increasing int by level to multiply tab by
+struct process printTree(struct process root){
+    
+}
 
 int main(int argv,char *argc[]){
     //proc directory
@@ -157,5 +160,6 @@ int main(int argv,char *argc[]){
     root.pid=1;
     root=makeTree(root,pList,count);
     //print tree
+
     closedir(drproc);
 }
