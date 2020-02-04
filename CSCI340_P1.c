@@ -162,7 +162,9 @@ void printTree(struct process root,int level){
     }
     printf("(%d) %s, %d kb\n",root.pid,root.comm,root.vsize);
     printTree(*root.children,level+1);
-    printTree(*root.siblings,level);
+    if(root.pid!=1){
+        printTree(*root.siblings,level);
+    }   
 }
 
 int main(int argv,char *argc[]){
