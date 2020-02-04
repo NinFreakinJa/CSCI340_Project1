@@ -28,7 +28,6 @@ struct process{
 
 struct process makeTree(struct process root,int pidList[],int processCount){
     //base case
-    printf("1\n");
     if(processCount<=0){
         struct process endR;
         endR.pid=-1;
@@ -37,15 +36,12 @@ struct process makeTree(struct process root,int pidList[],int processCount){
     //open stat file for process
     char filename[100];
     sprintf(filename,"/proc/%d/stat",root.pid);
-    printf("2\n");
     //char *filename=strcat("/proc/",itoa(root.pid));
     //filename=strcat(filename,"/stat");
     FILE *statF=fopen(filename,"r");
     //char *statR;
     //read stat file
-    printf("3\n");
     char statR[5200];
-    printf("2\n");
     //while(fscanf(statF,"%s",temp)!=EOF){
      //   printf("1\n");
      //   statR=strcat(statR," ");
@@ -56,20 +52,19 @@ struct process makeTree(struct process root,int pidList[],int processCount){
     while(feof(statF)){
         statR[fileCount++]=fgetc(statF);
     }
-    printf("4\n");
     char *token=strtok(statR," \n\t\r\v\f");
     int count=1;
     //split stat file fields and set appropriate variables
-    while(token !=NULL && count<25){
+    while(token !=NULL && count<24){
         token=strtok(NULL," \n\t\r\v\f");
         count++;
-        if(count==3){
+        if(count==2){
             root.comm=token;
         }
-        else if(count==5){
+        else if(count==4){
             root.ppid=atoi(token);
         }
-        else if(count==24){
+        else if(count==23){
             root.vsize=atoi(token);
         }
     }
@@ -83,7 +78,6 @@ struct process makeTree(struct process root,int pidList[],int processCount){
     
     //recursive process for adding children
     struct process addChildren(struct process croot, int cpidList[], int cprocessCount){
-        printf("2\n");
         //base case
         if(cprocessCount<=0){
             struct process endR;
@@ -98,9 +92,7 @@ struct process makeTree(struct process root,int pidList[],int processCount){
                 sprintf(cfilename,"/proc/%d/stat",croot.pid);
                 //char *cfilename=strcat("/proc/",itoa(cpidList[i]));
                 //cfilename=strcat(cfilename,"/stat");
-                printf("2\n");
                 FILE *cstatF=fopen(cfilename,"r");
-                printf("2\n");
                 char cstatR[5200];
                 int cfileCount=0;
                 while(feof(cstatF)){
@@ -113,14 +105,13 @@ struct process makeTree(struct process root,int pidList[],int processCount){
                     //cstatR=strcat(cstatR,ctemp);
                     //printf("%s",cstatR);
                 //}
-                printf("2\n");
                 char *ctoken=strtok(cstatR," \n\t\r\v\f");
                 int ccount=1;
-                while(ctoken !=NULL && ccount<6){
+                while(ctoken !=NULL && ccount<5){
                     ctoken=strtok(NULL," \n\t\r\v\f");
                     ccount++;
                     //ppid field
-                    if(ccount==5){
+                    if(ccount==4){
                         //if ppid is the croot
                         if(atoi(ctoken)==croot.pid){
                             //creates new croot to continue recursion
@@ -167,12 +158,11 @@ void printTree(struct process root,int level){
         return;
     }
     for(int i=0;i<level;i++){
-        printf("\t");
+        printf("    ");
     }
     printf("(%d) %s, %d kb\n",root.pid,root.comm,root.vsize);
     printTree(*root.children,level+1);
     printTree(*root.siblings,level);
-    
 }
 
 int main(int argv,char *argc[]){
