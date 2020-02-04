@@ -44,11 +44,11 @@ struct process makeTree(struct process root,int pidList[],int processCount){
                 //char *cfilename=strcat("/proc/",itoa(cpidList[i]));
                 //cfilename=strcat(cfilename,"/stat");
                 FILE *cstatF=fopen(cfilename,"r");
-                char cstatR[5200];
+                /*char cstatR[5200];
                 int cfileCount=0;
                 while(feof(cstatF)){
                     cstatR[cfileCount++]=fgetc(cstatF);
-                }
+                }*/
                 //char *ctemp=malloc(sizeof(char)*5200);
                 //while(fscanf(cstatF,"%s",ctemp)!=EOF){
                   //  printf("3\n");
@@ -56,7 +56,20 @@ struct process makeTree(struct process root,int pidList[],int processCount){
                     //cstatR=strcat(cstatR,ctemp);
                     //printf("%s",cstatR);
                 //}
-                char *ctoken=strtok(cstatR," \n\t\r\v\f");
+                long clength;
+                char *cbuffer=0;
+                if(cstatF){
+                    fseek(cstatF,0,SEEK_END);
+                    clength=ftell(cstatF);
+                    fseek(cstatF,0,SEEK_SET);
+                    cbuffer=malloc(clength);
+                    if(cbuffer){
+                        fread(cbuffer,1,clength,cstatF);
+                    }
+                    fclose(cstatF);
+                }
+                char *ctoken=strtok(cbuffer," \n\t\r\v\f");
+                //char *ctoken=strtok(cstatR," \n\t\r\v\f");
                 int ccount=1;
                 while(ctoken !=NULL && ccount<5){
                     ctoken=strtok(NULL," \n\t\r\v\f");
@@ -104,18 +117,30 @@ struct process makeTree(struct process root,int pidList[],int processCount){
     FILE *statF=fopen(filename,"r");
     //char *statR;
     //read stat file
-    char statR[5200];
+    //char statR[5200];
     //while(fscanf(statF,"%s",temp)!=EOF){
      //   printf("1\n");
      //   statR=strcat(statR," ");
      //   statR=strcat(statR,temp);
      //   printf("%s",statR);
    //}
-    int fileCount=0;
+    /*int fileCount=0;
     while(feof(statF)){
         statR[fileCount++]=fgetc(statF);
+    }*/
+    long length;
+    char *buffer=0;
+    if(statF){
+        fseek(statF,0,SEEK_END);
+        length=ftell(statF);
+        fseek(statF,0,SEEK_SET);
+        buffer=malloc(length);
+        if(buffer){
+            fread(buffer,1,length,statF);
+        }
+        fclose(statF);
     }
-    char *token=strtok(statR," \n\t\r\v\f");
+    char *token=strtok(buffer," \n\t\r\v\f");
     int count=1;
     //split stat file fields and set appropriate variables
     while(token !=NULL && count<24){
@@ -145,7 +170,6 @@ struct process makeTree(struct process root,int pidList[],int processCount){
     rootChild=addChildren(root,newpList,processCount-1);
     root.children=&rootChild;
     //close the file
-    fclose(statF);
     return root;
 }
 
