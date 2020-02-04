@@ -21,14 +21,12 @@ struct process{
     // %s field 2
     char *comm;
 };
-//make tree method
-//recursive function starting at root (systemd pid=1)
-//goes through list PIDs and when PPID is the same it is added and finds its own children until coming back and continuing
 
+struct process makeTree(struct process root,int pidList[],int processCount);
+struct process addChildren(struct process croot, int cpidList[], int cprocessCount);
 
-struct process makeTree(struct process root,int pidList[],int processCount){
-    //recursive process for adding children
-    struct process addChildren(struct process croot, int cpidList[], int cprocessCount){
+//recursive process for adding children
+struct process addChildren(struct process croot, int cpidList[], int cprocessCount){
         //base case
         if(cprocessCount<=0){
             struct process endR;
@@ -90,6 +88,14 @@ struct process makeTree(struct process root,int pidList[],int processCount){
         endR.pid=-1;
         return endR;
     }
+
+
+//make tree method
+//recursive function starting at root (systemd pid=1)
+//goes through list PIDs and when PPID is the same it is added and finds its own children until coming back and continuing
+
+
+struct process makeTree(struct process root,int pidList[],int processCount){
     //base case
     if(processCount<=0){
         struct process endR;
