@@ -134,11 +134,11 @@ struct process makeTree(struct process root,int pidList[],int processCount){
                 }
             }
         }
-    //another base case where no children are found
-    struct process endR;
-    endR.pid=-1;
-    return endR;
-}
+        //another base case where no children are found
+        struct process endR;
+        endR.pid=-1;
+        return endR;
+    }
     //will go through and create linked list of child processes
     struct process rootChild;
     rootChild=addChildren(root,newpList,processCount-1);
@@ -201,6 +201,9 @@ int main(int argv,char *argc[]){
     //create tree
     struct process root;
     root.pid=1;
+    struct process endR;
+    endR.pid=-1;
+    root.siblings=&endR;
     root=makeTree(root,pList,count);
     //print tree
     printTree(root,0);
