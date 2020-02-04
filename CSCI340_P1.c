@@ -180,7 +180,7 @@ int main(int argv,char *argc[]){
     struct dirent *entry;
     int count=0;
     if(drproc==NULL){
-        printf("Could not open proc directory");
+        printf("Could not open proc directory\n");
         return 0;
     }
     int size=300;
