@@ -27,55 +27,6 @@ struct process{
 
 
 struct process makeTree(struct process root,int pidList[],int processCount){
-    //base case
-    if(processCount<=0){
-        struct process endR;
-        endR.pid=-1;
-        return endR;
-    }
-    //open stat file for process
-    char filename[100];
-    sprintf(filename,"/proc/%d/stat",root.pid);
-    //char *filename=strcat("/proc/",itoa(root.pid));
-    //filename=strcat(filename,"/stat");
-    FILE *statF=fopen(filename,"r");
-    //char *statR;
-    //read stat file
-    char statR[5200];
-    //while(fscanf(statF,"%s",temp)!=EOF){
-     //   printf("1\n");
-     //   statR=strcat(statR," ");
-     //   statR=strcat(statR,temp);
-     //   printf("%s",statR);
-   //}
-    int fileCount=0;
-    while(feof(statF)){
-        statR[fileCount++]=fgetc(statF);
-    }
-    char *token=strtok(statR," \n\t\r\v\f");
-    int count=1;
-    //split stat file fields and set appropriate variables
-    while(token !=NULL && count<24){
-        token=strtok(NULL," \n\t\r\v\f");
-        count++;
-        if(count==2){
-            root.comm=token;
-        }
-        else if(count==4){
-            root.ppid=atoi(token);
-        }
-        else if(count==23){
-            root.vsize=atoi(token);
-        }
-    }
-    //new process list with the root removed to avoid redundancy and infinite recursion
-    int newpList[processCount-1];
-    for(int i=0;i<processCount;i++){
-        if(pidList[i]!=root.pid){
-            newpList[i]=pidList[i];
-        }   
-    }
-    
     //recursive process for adding children
     struct process addChildren(struct process croot, int cpidList[], int cprocessCount){
         //base case
@@ -139,6 +90,56 @@ struct process makeTree(struct process root,int pidList[],int processCount){
         endR.pid=-1;
         return endR;
     }
+    //base case
+    if(processCount<=0){
+        struct process endR;
+        endR.pid=-1;
+        return endR;
+    }
+    //open stat file for process
+    char filename[100];
+    sprintf(filename,"/proc/%d/stat",root.pid);
+    //char *filename=strcat("/proc/",itoa(root.pid));
+    //filename=strcat(filename,"/stat");
+    FILE *statF=fopen(filename,"r");
+    //char *statR;
+    //read stat file
+    char statR[5200];
+    //while(fscanf(statF,"%s",temp)!=EOF){
+     //   printf("1\n");
+     //   statR=strcat(statR," ");
+     //   statR=strcat(statR,temp);
+     //   printf("%s",statR);
+   //}
+    int fileCount=0;
+    while(feof(statF)){
+        statR[fileCount++]=fgetc(statF);
+    }
+    char *token=strtok(statR," \n\t\r\v\f");
+    int count=1;
+    //split stat file fields and set appropriate variables
+    while(token !=NULL && count<24){
+        token=strtok(NULL," \n\t\r\v\f");
+        count++;
+        if(count==2){
+            root.comm=token;
+        }
+        else if(count==4){
+            root.ppid=atoi(token);
+        }
+        else if(count==23){
+            root.vsize=atoi(token);
+        }
+    }
+    //new process list with the root removed to avoid redundancy and infinite recursion
+    int newpList[processCount-1];
+    for(int i=0;i<processCount;i++){
+        if(pidList[i]!=root.pid){
+            newpList[i]=pidList[i];
+        }   
+    }
+    
+    
     //will go through and create linked list of child processes
     struct process rootChild;
     rootChild=addChildren(root,newpList,processCount-1);
