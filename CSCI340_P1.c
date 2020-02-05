@@ -82,7 +82,7 @@ struct process addChildren(struct process croot, int cpidList[], int cprocessCou
                 char *ctoken=strtok(line," \n\t\r\v\f");
                     //char *ctoken=strtok(cstatR," \n\t\r\v\f");
                     int ccount=1;
-                    while(ctoken !=NULL && ccount<5){
+                    while(ctoken !=NULL && ccount<4){
                         ctoken=strtok(NULL," \n\t\r\v\f");
                         ccount++;
                         //ppid field
@@ -94,9 +94,10 @@ struct process addChildren(struct process croot, int cpidList[], int cprocessCou
                                 newRoot.pid=cpidList[i];
                                 //removes process from list to avoid redundancy
                                 int cnewpList[cprocessCount-1];
+                                int arrayCount=0;
                                 for(int i=0;i<cprocessCount;i++){
                                     if(cpidList[i]!=croot.pid){
-                                    cnewpList[i]=cpidList[i];
+                                    cnewpList[arrayCount++]=cpidList[i];
                                 }   
                             }
                             //creates linked list of siblings
@@ -174,7 +175,7 @@ struct process makeTree(struct process root,int pidList[],int processCount){
     char *token=strtok(line," \n\t\r\v\f");
         int count=1;
         //split stat file fields and set appropriate variables
-        while(token !=NULL && count<24){
+        while(token !=NULL && count<23){
             token=strtok(NULL," \n\t\r\v\f");
             count++;
             if(count==2){
@@ -189,9 +190,10 @@ struct process makeTree(struct process root,int pidList[],int processCount){
         }
     //new process list with the root removed to avoid redundancy and infinite recursion
     int newpList[processCount-1];
+    int arrayCount=0;
     for(int i=0;i<processCount;i++){
         if(pidList[i]!=root.pid){
-            newpList[i]=pidList[i];
+            newpList[arrayCount++]=pidList[i];
         }   
     }
     
