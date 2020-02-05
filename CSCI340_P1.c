@@ -48,7 +48,9 @@ struct process addChildren(struct process croot, int cpidList[], int cprocessCou
                 sprintf(cfilename,"/proc/%d/stat",cpidList[i]);
                 //char *cfilename=strcat("/proc/",itoa(cpidList[i]));
                 //cfilename=strcat(cfilename,"/stat");
+                
                 FILE *cstatF=fopen(cfilename,"r");
+                
                 /*char cstatR[5200];
                 int cfileCount=0;
                 while(feof(cstatF)){
@@ -61,7 +63,7 @@ struct process addChildren(struct process croot, int cpidList[], int cprocessCou
                     //cstatR=strcat(cstatR,ctemp);
                     //printf("%s",cstatR);
                 //}
-                long clength;
+                /*long clength;
                 char *cbuffer=0;
                 if(cstatF){
                     fseek(cstatF,0L,SEEK_END);
@@ -72,24 +74,28 @@ struct process addChildren(struct process croot, int cpidList[], int cprocessCou
                         fread(cbuffer,sizeof(char),clength,cstatF);
                     }
                     fclose(cstatF);
-                }
-                char *ctoken=strtok(cbuffer," \n\t\r\v\f");
-                //char *ctoken=strtok(cstatR," \n\t\r\v\f");
-                int ccount=1;
-                while(ctoken !=NULL && ccount<5){
-                    ctoken=strtok(NULL," \n\t\r\v\f");
-                    ccount++;
-                    //ppid field
-                    if(ccount==4){
-                        //if ppid is the croot
-                        if(atoi(ctoken)==croot.pid){
-                            //creates new croot to continue recursion
-                            struct process newRoot;
-                            newRoot.pid=cpidList[i];
-                            //removes process from list to avoid redundancy
-                            int cnewpList[cprocessCount-1];
-                            for(int i=0;i<cprocessCount;i++){
-                                if(cpidList[i]!=croot.pid){
+                }*/
+
+                char line[300];
+                fgets(line,300,cstatF);
+                fclose(cstatF);
+                char *ctoken=strtok(line," \n\t\r\v\f");
+                    //char *ctoken=strtok(cstatR," \n\t\r\v\f");
+                    int ccount=1;
+                    while(ctoken !=NULL && ccount<5){
+                        ctoken=strtok(NULL," \n\t\r\v\f");
+                        ccount++;
+                        //ppid field
+                        if(ccount==4){
+                            //if ppid is the croot
+                            if(atoi(ctoken)==croot.pid){
+                                 //creates new croot to continue recursion
+                                struct process newRoot;
+                                newRoot.pid=cpidList[i];
+                                //removes process from list to avoid redundancy
+                                int cnewpList[cprocessCount-1];
+                                for(int i=0;i<cprocessCount;i++){
+                                    if(cpidList[i]!=croot.pid){
                                     cnewpList[i]=cpidList[i];
                                 }   
                             }
@@ -133,7 +139,9 @@ struct process makeTree(struct process root,int pidList[],int processCount){
     sprintf(filename,"/proc/%d/stat",root.pid);
     //char *filename=strcat("/proc/",itoa(root.pid));
     //filename=strcat(filename,"/stat");
+    
     FILE *statF=fopen(filename,"r");
+    
     //char *statR;
     //read stat file
     //char statR[5200];
@@ -147,7 +155,7 @@ struct process makeTree(struct process root,int pidList[],int processCount){
     while(feof(statF)){
         statR[fileCount++]=fgetc(statF);
     }*/
-    long length;
+    /*long length;
     char *buffer=0;
     if(statF){
         fseek(statF,0L,SEEK_END);
@@ -158,23 +166,27 @@ struct process makeTree(struct process root,int pidList[],int processCount){
             fread(buffer,sizeof(char),length,statF);
         }
         fclose(statF);
-    }
-    char *token=strtok(buffer," \n\t\r\v\f");
-    int count=1;
-    //split stat file fields and set appropriate variables
-    while(token !=NULL && count<24){
-        token=strtok(NULL," \n\t\r\v\f");
-        count++;
-        if(count==2){
-            root.comm=token;
+    }*/
+
+    char line[300];
+    fgets(line,300,statF);
+    fclose(statF);
+    char *token=strtok(line," \n\t\r\v\f");
+        int count=1;
+        //split stat file fields and set appropriate variables
+        while(token !=NULL && count<24){
+            token=strtok(NULL," \n\t\r\v\f");
+            count++;
+            if(count==2){
+                root.comm=token;
+            }
+            else if(count==4){
+                root.ppid=atoi(token);
+            }
+            else if(count==23){
+                root.vsize=atoi(token);
+            }
         }
-        else if(count==4){
-            root.ppid=atoi(token);
-        }
-        else if(count==23){
-            root.vsize=atoi(token);
-        }
-    }
     //new process list with the root removed to avoid redundancy and infinite recursion
     int newpList[processCount-1];
     for(int i=0;i<processCount;i++){
