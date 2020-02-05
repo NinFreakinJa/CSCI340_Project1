@@ -34,11 +34,18 @@ struct process addChildren(struct process croot, int cpidList[], int cprocessCou
             return endR;
         }
         //searches processes for ppid of croot
+        
         for(int i=0;i<cprocessCount;i++){
             if(croot.pid!=cpidList[i]){
                 //opens and reads stat file
-                char cfilename[100];
-                sprintf(cfilename,"/proc/%d/stat",croot.pid);
+                int pidLength=0;
+                int ltemp=cpidList[i];
+                while(ltemp!=0){
+                    ltemp=ltemp/10;
+                    pidLength++;
+                }
+                char *cfilename=malloc(sizeof(char)*(strlen("/proc//stat")+pidLength));
+                sprintf(cfilename,"/proc/%d/stat",cpidList[i]);
                 //char *cfilename=strcat("/proc/",itoa(cpidList[i]));
                 //cfilename=strcat(cfilename,"/stat");
                 FILE *cstatF=fopen(cfilename,"r");
@@ -57,12 +64,12 @@ struct process addChildren(struct process croot, int cpidList[], int cprocessCou
                 long clength;
                 char *cbuffer=0;
                 if(cstatF){
-                    fseek(cstatF,0,SEEK_END);
+                    fseek(cstatF,0L,SEEK_END);
                     clength=ftell(cstatF);
-                    fseek(cstatF,0,SEEK_SET);
-                    cbuffer=malloc(clength);
+                    fseek(cstatF,0L,SEEK_SET);
+                    cbuffer=(char*)calloc(clength,sizeof(char));
                     if(cbuffer){
-                        fread(cbuffer,1,clength,cstatF);
+                        fread(cbuffer,sizeof(char),clength,cstatF);
                     }
                     fclose(cstatF);
                 }
@@ -116,7 +123,13 @@ struct process makeTree(struct process root,int pidList[],int processCount){
         return endR;
     }
     //open stat file for process
-    char filename[100];
+    int pidLength=0;
+    int ltemp=root.pid;
+    while(ltemp!=0){
+        ltemp=ltemp/10;
+        pidLength++;
+    }
+    char *filename=malloc(sizeof(char)*(strlen("/proc//stat")+pidLength));
     sprintf(filename,"/proc/%d/stat",root.pid);
     //char *filename=strcat("/proc/",itoa(root.pid));
     //filename=strcat(filename,"/stat");
@@ -137,12 +150,12 @@ struct process makeTree(struct process root,int pidList[],int processCount){
     long length;
     char *buffer=0;
     if(statF){
-        fseek(statF,0,SEEK_END);
+        fseek(statF,0L,SEEK_END);
         length=ftell(statF);
-        fseek(statF,0,SEEK_SET);
-        buffer=malloc(length);
+        fseek(statF,0L,SEEK_SET);
+        buffer=(char*)calloc(length,sizeof(char));
         if(buffer){
-            fread(buffer,1,length,statF);
+            fread(buffer,sizeof(char),length,statF);
         }
         fclose(statF);
     }
@@ -223,8 +236,8 @@ int main(int argv,char *argc[]){
             count++;
             //increases list size if it gets too big
             if(count>=size){
-                pList=realloc(pList,sizeof(int)*(size+50));
                 size+=50;
+                pList=realloc(pList,sizeof(int)*(size));
             }
             pList[count-1]=atoi(directoryName);
         }
