@@ -35,7 +35,7 @@ int main(int argc, char const *argv[]){
     }
     // Initializing variables for parsing directories.
     int counter = 0;
-    char dirName[100];
+    char dirName[255];
     // Parsing directory to find PIDs (any directory which is a number).
     currDirectory = readdir(dir);
     while(currDirectory != NULL){
