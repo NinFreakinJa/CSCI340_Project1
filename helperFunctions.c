@@ -27,7 +27,7 @@ int getProcessCount(void){
     }
     // Initializing variables for parsing directories.
     int counter = 0;
-    char dirName[6];
+    char dirName[256];
     // Parsing directory to find PIDs (any directory which is a number).
     currDirectory = readdir(dir);
     while(currDirectory != NULL){
