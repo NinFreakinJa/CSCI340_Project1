@@ -124,7 +124,7 @@ void printTreeHelper(struct process *runningProcesses, struct process current, c
     printf("%s(%d) %s, %d kb\n", spaces, current.pid, current.name, current.vsize);
     // Creates nextSpaces string with two additional spaces for child processes.
     char nextSpaces[50];
-    sprintf(nextSpaces, "%s  ", spaces);
+    sprintf(nextSpaces, "%s     ", spaces);
     // Searching for child processes.
     for(int i = 0; i < size; i++){
         if(runningProcesses[i].ppid == current.pid){
